@@ -1,0 +1,7 @@
+services:
+  kinto-nginx:
+    image: ${NGINX_IMAGE}:${IMAGE_TAG}
+    container_name: kinto-nginx
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:8087:80"
