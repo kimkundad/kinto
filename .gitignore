@@ -15,6 +15,7 @@ pnpm-debug.log*
 .env
 .env.*
 !.env.example
+credentials.json
 
 # Editor / OS files
 .DS_Store

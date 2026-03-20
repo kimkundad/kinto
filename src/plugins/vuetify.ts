@@ -1,8 +1,13 @@
 import 'vuetify/styles'
 import '@mdi/font/css/materialdesignicons.css'
 import { createVuetify } from 'vuetify'
+import { th } from 'vuetify/locale'
 
 export const vuetify = createVuetify({
+  locale: {
+    locale: 'th',
+    messages: { th },
+  },
   theme: {
     defaultTheme: 'dark',
     themes: {

@@ -1,5 +1,5 @@
 ﻿<script setup lang="ts">
-import { computed, reactive, ref } from 'vue'
+import { computed, reactive, ref, watch } from 'vue'
 
 type LanguageOption = {
   code: 'TH' | 'EN'
@@ -117,8 +117,19 @@ const stepItems: StepItem[] = [
 const selectedLanguage = ref<LanguageOption>(languages[0])
 const currentPage = ref<'registration' | 'terms'>('registration')
 const currentStep = ref<1 | 2 | 3 | 4>(1)
+const isSubmitting = ref(false)
+const purchaseDateMenu = ref(false)
 const receiptPreviewUrl = ref('')
 const receiptPreviewType = ref<'image' | 'document' | ''>('')
+const validationDialog = ref(false)
+const validationMessage = ref('')
+const receiptFile = ref<File | null>(null)
+const todayBangkokIso = new Intl.DateTimeFormat('en-CA', {
+  timeZone: 'Asia/Bangkok',
+  year: 'numeric',
+  month: '2-digit',
+  day: '2-digit',
+}).format(new Date())
 
 const formData = reactive({
   fullName: '',
@@ -139,6 +150,31 @@ const formData = reactive({
   acceptedTerms: false,
 })
 
+const stepOneErrors = reactive({
+  fullName: false,
+  address: false,
+  province: false,
+  postalCode: false,
+  email: false,
+  phone: false,
+})
+
+const stepTwoErrors = reactive({
+  dealerName: false,
+  purchaseDate: false,
+  tireModel: false,
+  invoiceNumber: false,
+  dotNumber: false,
+  receiptFileName: false,
+})
+
+const stepThreeErrors = reactive({
+  vehicleBrandModel: false,
+  licensePlate: false,
+  registrationProvince: false,
+  acceptedTerms: false,
+})
+
 const currentStepTitle = computed(() => {
   if (currentStep.value === 1) return 'ขั้นตอนที่ 1: ข้อมูลส่วนตัว'
   if (currentStep.value === 2) return 'ขั้นตอนที่ 2: ข้อมูลการซื้อ'
@@ -153,7 +189,65 @@ const currentStepDescription = computed(() => {
   return ''
 })
 
-function goToNextStep() {
+const maskedPhone = computed(() => {
+  const digits = formData.phone.trim()
+  if (!digits) return '085 XXX XXXX'
+  if (digits.length <= 3) return digits
+  if (digits.length <= 6) return `${digits.slice(0, 3)} ${digits.slice(3)}`
+  return `${digits.slice(0, 3)} ${digits.slice(3, 6)} ${digits.slice(6, 10)}`
+})
+
+const formattedPurchaseDate = computed(() => {
+  if (!formData.purchaseDate) return ''
+  const date = new Date(formData.purchaseDate)
+  if (Number.isNaN(date.getTime())) return formData.purchaseDate
+  return new Intl.DateTimeFormat('th-TH-u-ca-buddhist', {
+    day: '2-digit',
+    month: 'long',
+    year: 'numeric',
+    timeZone: 'Asia/Bangkok',
+  }).format(date)
+})
+
+function normalizePurchaseDate(value: unknown) {
+  if (!value) return ''
+
+  const rawValue = Array.isArray(value) ? value[0] : value
+
+  if (typeof rawValue === 'string') {
+    return rawValue
+  }
+
+  if (rawValue instanceof Date && !Number.isNaN(rawValue.getTime())) {
+    return rawValue.toISOString().slice(0, 10)
+  }
+
+  return ''
+}
+
+function isFuturePurchaseDate(value: string) {
+  if (!value) return false
+  return value > todayBangkokIso
+}
+
+async function goToNextStep() {
+  if (currentPage.value === 'registration' && currentStep.value === 1 && !validateStepOne()) {
+    return
+  }
+
+  if (currentPage.value === 'registration' && currentStep.value === 2 && !validateStepTwo()) {
+    return
+  }
+
+  if (currentPage.value === 'registration' && currentStep.value === 3) {
+    if (!validateStepThree()) {
+      return
+    }
+
+    await submitRegistration()
+    return
+  }
+
   if (currentStep.value < 4) {
     currentStep.value = (currentStep.value + 1) as 1 | 2 | 3 | 4
   }
@@ -177,17 +271,60 @@ function goToPage(page: 'home' | 'registration' | 'terms') {
   }
 }
 
+function keepOnlyDigits(field: 'postalCode' | 'phone', event: Event) {
+  const target = event.target as HTMLInputElement
+  formData[field] = target.value.replace(/\D/g, '')
+}
+
+function allowDigitsOnly(event: KeyboardEvent) {
+  const allowedKeys = ['Backspace', 'Delete', 'Tab', 'ArrowLeft', 'ArrowRight', 'Home', 'End']
+  if (allowedKeys.includes(event.key) || event.ctrlKey || event.metaKey) {
+    return
+  }
+
+  if (!/^\d$/.test(event.key)) {
+    event.preventDefault()
+  }
+}
+
+function pasteDigitsOnly(field: 'postalCode' | 'phone', event: ClipboardEvent) {
+  event.preventDefault()
+  const pastedText = event.clipboardData?.getData('text') ?? ''
+  formData[field] = pastedText.replace(/\D/g, '')
+}
+
+function setPurchaseDate(value: unknown) {
+  formData.purchaseDate = normalizePurchaseDate(value)
+  purchaseDateMenu.value = false
+}
+
+watch(() => formData.postalCode, (value) => {
+  const digitsOnly = value.replace(/\D/g, '')
+  if (digitsOnly !== value) {
+    formData.postalCode = digitsOnly
+  }
+})
+
+watch(() => formData.phone, (value) => {
+  const digitsOnly = value.replace(/\D/g, '')
+  if (digitsOnly !== value) {
+    formData.phone = digitsOnly
+  }
+})
+
 function onReceiptUpload(event: Event) {
   const target = event.target as HTMLInputElement
   const file = target.files?.[0]
 
   if (!file) {
+    receiptFile.value = null
     formData.receiptFileName = ''
     receiptPreviewUrl.value = ''
     receiptPreviewType.value = ''
     return
   }
 
+  receiptFile.value = file
   formData.receiptFileName = file.name
 
   if (receiptPreviewUrl.value) {
@@ -202,6 +339,125 @@ function onReceiptUpload(event: Event) {
   }
 
   receiptPreviewType.value = 'document'
+}
+
+function validateStepOne() {
+  const fullName = formData.fullName.trim()
+  const address = formData.address.trim()
+  const province = formData.province.trim()
+  const postalCode = formData.postalCode.trim()
+  const email = formData.email.trim()
+  const phone = formData.phone.trim()
+
+  stepOneErrors.fullName = fullName === ''
+  stepOneErrors.address = address === ''
+  stepOneErrors.province = province === ''
+  stepOneErrors.postalCode = postalCode === '' || !/^\d+$/.test(postalCode)
+  stepOneErrors.email = email === '' || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)
+  stepOneErrors.phone = phone === '' || !/^\d+$/.test(phone)
+
+  const hasError = Object.values(stepOneErrors).some(Boolean)
+
+  if (hasError) {
+    validationMessage.value = 'กรุณากรอกข้อมูลส่วนตัวให้ครบถ้วนและตรวจสอบรูปแบบอีเมล/ตัวเลขให้ถูกต้อง'
+    validationDialog.value = true
+    return false
+  }
+
+  return true
+}
+
+function validateStepTwo() {
+  const dealerName = formData.dealerName.trim()
+  const purchaseDate = normalizePurchaseDate(formData.purchaseDate)
+  const tireModel = formData.tireModel.trim()
+  const invoiceNumber = formData.invoiceNumber.trim()
+  const dotNumber = formData.dotNumber.trim()
+  const receiptFileName = formData.receiptFileName.trim()
+
+  formData.purchaseDate = purchaseDate
+
+  stepTwoErrors.dealerName = dealerName === ''
+  stepTwoErrors.purchaseDate = purchaseDate === '' || isFuturePurchaseDate(purchaseDate)
+  stepTwoErrors.tireModel = tireModel === ''
+  stepTwoErrors.invoiceNumber = invoiceNumber === ''
+  stepTwoErrors.dotNumber = dotNumber === ''
+  stepTwoErrors.receiptFileName = receiptFileName === ''
+
+  const hasError = Object.values(stepTwoErrors).some(Boolean)
+
+  if (hasError) {
+    validationMessage.value = 'กรุณากรอกข้อมูลการซื้อให้ครบทุกช่อง เลือกวันที่ซื้อที่ไม่เกินวันปัจจุบัน และอัพโหลดใบเสร็จเพื่อดำเนินการต่อ'
+    validationDialog.value = true
+    return false
+  }
+
+  return true
+}
+
+function validateStepThree() {
+  const vehicleBrandModel = formData.vehicleBrandModel.trim()
+  const licensePlate = formData.licensePlate.trim()
+  const registrationProvince = formData.registrationProvince.trim()
+
+  stepThreeErrors.vehicleBrandModel = vehicleBrandModel === ''
+  stepThreeErrors.licensePlate = licensePlate === ''
+  stepThreeErrors.registrationProvince = registrationProvince === ''
+  stepThreeErrors.acceptedTerms = !formData.acceptedTerms
+
+  const hasError = Object.values(stepThreeErrors).some(Boolean)
+
+  if (hasError) {
+    validationMessage.value = 'กรุณากรอกข้อมูลรถให้ครบถ้วน และกดยอมรับเงื่อนไขการรับประกันก่อนส่งข้อมูล'
+    validationDialog.value = true
+    return false
+  }
+
+  return true
+}
+
+async function submitRegistration() {
+  try {
+    isSubmitting.value = true
+
+    const payload = new FormData()
+    payload.append('fullName', formData.fullName)
+    payload.append('address', formData.address)
+    payload.append('province', formData.province)
+    payload.append('postalCode', formData.postalCode)
+    payload.append('email', formData.email)
+    payload.append('phone', formData.phone)
+    payload.append('dealerName', formData.dealerName)
+    payload.append('purchaseDate', formData.purchaseDate)
+    payload.append('tireModel', formData.tireModel)
+    payload.append('invoiceNumber', formData.invoiceNumber)
+    payload.append('dotNumber', formData.dotNumber)
+    payload.append('receiptFileName', receiptFile.value?.name ?? formData.receiptFileName)
+    payload.append('vehicleBrandModel', formData.vehicleBrandModel)
+    payload.append('licensePlate', formData.licensePlate)
+    payload.append('registrationProvince', formData.registrationProvince)
+    payload.append('acceptedTerms', String(formData.acceptedTerms))
+
+    if (receiptFile.value) {
+      payload.append('receiptFile', receiptFile.value)
+    }
+
+    const response = await fetch('/api/registrations', {
+      method: 'POST',
+      body: payload,
+    })
+
+    if (!response.ok) {
+      throw new Error('submit_failed')
+    }
+
+    currentStep.value = 4
+  } catch {
+    validationMessage.value = 'ไม่สามารถบันทึกข้อมูลได้ในขณะนี้ กรุณาลองใหม่อีกครั้ง'
+    validationDialog.value = true
+  } finally {
+    isSubmitting.value = false
+  }
 }
 </script>
 
@@ -362,21 +618,21 @@ function onReceiptUpload(event: Event) {
               <v-form v-if="currentStep === 1" class="form-grid">
                 <div class="form-row form-row--full">
                   <label>ชื่อ-นามสกุล</label>
-                  <div class="field-shell">
+                  <div class="field-shell" :class="{ 'field-shell--active': stepOneErrors.fullName }">
                     <input v-model="formData.fullName" type="text" placeholder="กรอกชื่อ-นามสกุลของคุณ" />
                   </div>
                 </div>
 
                 <div class="form-row form-row--full">
                   <label>ที่อยู่</label>
-                  <div class="field-shell field-shell--textarea">
+                  <div class="field-shell field-shell--textarea" :class="{ 'field-shell--active': stepOneErrors.address }">
                     <textarea v-model="formData.address" placeholder="บ้านเลขที่, ถนน, ตำบล/แขวง"></textarea>
                   </div>
                 </div>
 
                 <div class="form-row">
                   <label>จังหวัด</label>
-                <div class="field-shell">
+                <div class="field-shell" :class="{ 'field-shell--active': stepOneErrors.province }">
                   <select v-model="formData.province" class="field-shell__select">
                     <option value="" disabled>เลือกจังหวัด</option>
                     <option v-for="province in thailandProvinces" :key="province" :value="province">{{ province }}</option>
@@ -387,22 +643,38 @@ function onReceiptUpload(event: Event) {
 
                 <div class="form-row">
                   <label>รหัสไปรษณีย์</label>
-                  <div class="field-shell">
-                    <input v-model="formData.postalCode" type="text" placeholder="กรอกรหัสไปรษณีย์" />
+                  <div class="field-shell" :class="{ 'field-shell--active': stepOneErrors.postalCode }">
+                    <input
+                      :value="formData.postalCode"
+                      type="text"
+                      inputmode="numeric"
+                      placeholder="กรอกรหัสไปรษณีย์"
+                      @keydown="allowDigitsOnly"
+                      @input="keepOnlyDigits('postalCode', $event)"
+                      @paste="pasteDigitsOnly('postalCode', $event)"
+                    />
                   </div>
                 </div>
 
                 <div class="form-row">
                   <label>อีเมล</label>
-                  <div class="field-shell">
+                  <div class="field-shell" :class="{ 'field-shell--active': stepOneErrors.email }">
                     <input v-model="formData.email" type="email" placeholder="example@email.com" />
                   </div>
                 </div>
 
                 <div class="form-row">
                   <label>เบอร์โทรศัพท์</label>
-                  <div class="field-shell">
-                    <input v-model="formData.phone" type="text" placeholder="08X-XXX-XXXX" />
+                  <div class="field-shell" :class="{ 'field-shell--active': stepOneErrors.phone }">
+                    <input
+                      :value="formData.phone"
+                      type="text"
+                      inputmode="numeric"
+                      placeholder="08XXXXXXXXX"
+                      @keydown="allowDigitsOnly"
+                      @input="keepOnlyDigits('phone', $event)"
+                      @paste="pasteDigitsOnly('phone', $event)"
+                    />
                   </div>
                 </div>
               </v-form>
@@ -410,42 +682,77 @@ function onReceiptUpload(event: Event) {
               <v-form v-else-if="currentStep === 2" class="form-grid form-grid--step-two">
                 <div class="form-row">
                   <label>ชื่อตัวแทนจำหน่าย / ร้านค้าที่สั่งซื้อ</label>
-                  <div class="field-shell">
+                  <div class="field-shell" :class="{ 'field-shell--active': stepTwoErrors.dealerName }">
                     <input v-model="formData.dealerName" type="text" placeholder="โปรดระบุชื่อ" />
                   </div>
                 </div>
 
                 <div class="form-row">
                   <label>วันที่ซื้อ</label>
-                  <div class="field-shell">
-                    <input v-model="formData.purchaseDate" type="text" placeholder="กรอกรหัสไปรษณีย์" />
-                  </div>
+                  <v-menu
+                    v-model="purchaseDateMenu"
+                    :close-on-content-click="false"
+                    location="bottom"
+                    offset="10"
+                  >
+                    <template #activator="{ props }">
+                      <button
+                        class="field-shell field-shell--button"
+                        :class="{ 'field-shell--active': stepTwoErrors.purchaseDate }"
+                        type="button"
+                        v-bind="props"
+                      >
+                        <span :class="['field-shell__value', { 'is-placeholder': !formData.purchaseDate }]">
+                          {{ formattedPurchaseDate || 'เลือกวันที่ซื้อ' }}
+                        </span>
+                        <v-icon icon="mdi-calendar-month-outline" size="18" />
+                      </button>
+                    </template>
+
+                    <div class="datepicker-shell">
+                      <v-date-picker
+                        :model-value="formData.purchaseDate"
+                        locale="th"
+                        :max="todayBangkokIso"
+                        show-adjacent-months
+                        hide-header
+                        color="primary"
+                        @update:model-value="setPurchaseDate"
+                      />
+                    </div>
+                  </v-menu>
                 </div>
 
                 <div class="form-row">
                   <label>รุ่น/ขนาดของยาง</label>
-                  <div class="field-shell">
+                  <div class="field-shell" :class="{ 'field-shell--active': stepTwoErrors.tireModel }">
                     <input v-model="formData.tireModel" type="text" placeholder="เช่น K-Sport 225/45R18" />
                   </div>
                 </div>
 
                 <div class="form-row">
                   <label>เลขที่ใบเสร็จ</label>
-                  <div class="field-shell">
+                  <div class="field-shell" :class="{ 'field-shell--active': stepTwoErrors.invoiceNumber }">
                     <input v-model="formData.invoiceNumber" type="text" placeholder="INV-20231015-001" />
                   </div>
                 </div>
 
                 <div class="form-row">
                   <label>หมายเลขยาง (DOT Number)</label>
-                  <div class="field-shell">
+                  <div class="field-shell" :class="{ 'field-shell--active': stepTwoErrors.dotNumber }">
                     <input v-model="formData.dotNumber" type="text" placeholder="15848565" />
                   </div>
                 </div>
 
                 <div class="form-row form-row--full">
                   <label>อัพโหลดใบเสร็จ</label>
-                  <label class="upload-zone" :class="{ 'upload-zone--has-file': formData.receiptFileName }">
+                  <label
+                    class="upload-zone"
+                    :class="{
+                      'upload-zone--has-file': formData.receiptFileName,
+                      'field-shell--active': stepTwoErrors.receiptFileName,
+                    }"
+                  >
                     <input class="upload-zone__input" type="file" accept=".png,.jpg,.jpeg,.pdf" @change="onReceiptUpload" />
 
                     <template v-if="receiptPreviewType === 'image' && receiptPreviewUrl">
@@ -474,21 +781,21 @@ function onReceiptUpload(event: Event) {
               <v-form v-else class="form-grid form-grid--step-three">
                 <div class="form-row form-row--full">
                   <label>ยี่ห้อ / รุ่นรถ</label>
-                  <div class="field-shell">
+                  <div class="field-shell" :class="{ 'field-shell--active': stepThreeErrors.vehicleBrandModel }">
                     <input v-model="formData.vehicleBrandModel" type="text" placeholder="โปรดระบุชื่อ" />
                   </div>
                 </div>
 
                 <div class="form-row">
                   <label>เลขทะเบียนรถ</label>
-                  <div class="field-shell">
+                  <div class="field-shell" :class="{ 'field-shell--active': stepThreeErrors.licensePlate }">
                     <input v-model="formData.licensePlate" type="text" placeholder="เช่น กข 1234" />
                   </div>
                 </div>
 
                 <div class="form-row">
                   <label>จังหวัด</label>
-                <div class="field-shell">
+                <div class="field-shell" :class="{ 'field-shell--active': stepThreeErrors.registrationProvince }">
                     <select v-model="formData.registrationProvince" class="field-shell__select">
                       <option value="" disabled>เลือกจังหวัดจดทะเบียน</option>
                       <option v-for="province in thailandProvinces" :key="`vehicle-${province}`" :value="province">{{ province }}</option>
@@ -497,7 +804,7 @@ function onReceiptUpload(event: Event) {
                   </div>
                 </div>
 
-                <label class="terms-check form-row form-row--full">
+                <label class="terms-check form-row form-row--full" :class="{ 'terms-check--active': stepThreeErrors.acceptedTerms }">
                   <input v-model="formData.acceptedTerms" type="checkbox" />
                   <span class="terms-check__box"></span>
                   <span class="terms-check__text">ข้าพเจ้าได้อ่านและยอมรับใน เงื่อนไขการรับประกัน และนโยบายความเป็นส่วนตัว บริษัท คินโตะ ไทร์ (ประเทศไทย) จำกัด</span>
@@ -505,13 +812,13 @@ function onReceiptUpload(event: Event) {
 
                 <div class="notice-banner form-row form-row--full">
                   <div class="notice-banner__icon">!</div>
-                  <p>โปรดตรวจสอบข้อมูลให้ถูกต้องเพื่อสิทธิประโยชน์ของตัวท่านเอง ระบบจะส่งข้อมูลยืนยันการลงทะเบียนไปยังหมายเลขเบอร์โทรศัพท์ 085 XXX XXXX</p>
+                  <p>โปรดตรวจสอบข้อมูลให้ถูกต้องเพื่อสิทธิประโยชน์ของตัวท่านเอง ระบบจะส่งข้อมูลยืนยันการลงทะเบียนไปยังหมายเลขเบอร์โทรศัพท์ {{ maskedPhone }}</p>
                 </div>
               </v-form>
 
               <div class="action-row" :class="{ 'action-row--between': currentStep > 1 }">
                 <button v-if="currentStep > 1" class="secondary-cta" type="button" @click="goToPreviousStep">ย้อนกลับ</button>
-                <button class="primary-cta" type="button" @click="goToNextStep">
+                <button class="primary-cta" type="button" :disabled="isSubmitting" @click="goToNextStep">
                   <span>{{ currentStep === 1 ? 'ต่อไป' : currentStep === 2 ? 'บันทึกและไปต่อ' : 'ส่งข้อมูลลงทะเบียน' }}</span>
                   <v-icon v-if="currentStep === 2" icon="mdi-chevron-right" size="22" />
                 </button>
@@ -582,6 +889,15 @@ function onReceiptUpload(event: Event) {
           FUJITA GIKEN CO., LTD. ©2026 ALL RIGHTS RESERVED. นโยบายคุ้มครองข้อมูลส่วนบุคคล
         </div>
       </footer>
+
+      <v-dialog v-model="validationDialog" max-width="460">
+        <div class="validation-modal">
+          <div class="validation-modal__icon">!</div>
+          <h3>กรอกข้อมูลไม่ครบถ้วน</h3>
+          <p>{{ validationMessage }}</p>
+          <button class="primary-cta validation-modal__button" type="button" @click="validationDialog = false">ตกลง</button>
+        </div>
+      </v-dialog>
     </div>
   </v-app>
 </template>

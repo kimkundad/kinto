@@ -1,6 +1,7 @@
 #!/usr/bin/env sh
 set -eu
 
+: "${API_IMAGE:?API_IMAGE is required}"
 : "${NGINX_IMAGE:?NGINX_IMAGE is required}"
 : "${IMAGE_TAG:?IMAGE_TAG is required}"
 

@@ -1,7 +1,26 @@
 services:
+  kinto-api:
+    image: ${API_IMAGE}:${IMAGE_TAG}
+    container_name: kinto-api
+    restart: unless-stopped
+    environment:
+      PORT: 3000
+      GOOGLE_APPLICATION_CREDENTIALS: /app/credentials.json
+      GOOGLE_SHEETS_SPREADSHEET_ID: 1OAgIyCe1L-XmErvyQboWsieqJZZ7EQ9e_0Iidw7iV9g
+      SPACES_REGION: ${SPACES_REGION}
+      SPACES_BUCKET: ${SPACES_BUCKET}
+      SPACES_ENDPOINT: ${SPACES_ENDPOINT}
+      SPACES_KEY: ${SPACES_KEY}
+      SPACES_SECRET: ${SPACES_SECRET}
+      SPACES_CDN_BASE_URL: ${SPACES_CDN_BASE_URL}
+    volumes:
+      - ./credentials.json:/app/credentials.json:ro
+
   kinto-nginx:
     image: ${NGINX_IMAGE}:${IMAGE_TAG}
     container_name: kinto-nginx
     restart: unless-stopped
+    depends_on:
+      - kinto-api
     ports:
       - "127.0.0.1:8087:80"
