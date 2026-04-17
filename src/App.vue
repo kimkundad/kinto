@@ -7,26 +7,172 @@ type LanguageOption = {
   flagSrc: string
 }
 
-type NavItem = {
-  key: 'home' | 'registration' | 'terms'
-  label: string
-}
+type NavItem = { key: 'home' | 'registration' | 'terms'; label: string }
 
 type StepItem = {
   number: 1 | 2 | 3
   label: string
 }
 
-const navItems: NavItem[] = [
-  { key: 'home', label: 'เว็บไซต์หลัก' },
-  { key: 'registration', label: 'ลงทะเบียนรับประกันสินค้า' },
-  { key: 'terms', label: 'เงื่อนไขการรับประกัน' },
-]
-
 const languages: LanguageOption[] = [
   { code: 'TH', label: 'ไทย', flagSrc: '/flags/thai.png' },
   { code: 'EN', label: 'English', flagSrc: '/flags/kingdom.png' },
 ]
+
+const translations = {
+  TH: {
+    nav: { home: 'เว็บไซต์หลัก', registration: 'ลงทะเบียนรับประกันสินค้า', terms: 'เงื่อนไขการรับประกัน' },
+    steps: ['ข้อมูลส่วนตัว', 'ข้อมูลการซื้อ', 'ข้อมูลรถ'],
+    hero: {
+      titleReg: 'ลงทะเบียนรับประกันยางคินโตะ ไทร์',
+      titleTerms: 'เงื่อนไขการรับประกันยางคินโตะ ไทร์',
+    },
+    reg: {
+      cardTitle: 'ลงทะเบียนรับประกันสินค้า',
+      cardSubtitle: 'ลงทะเบียนยางใหม่ของคุณเพื่อความอุ่นใจ ง่ายๆ เพียง 3 ขั้นตอน',
+      stepTitles: ['ขั้นตอนที่ 1: ข้อมูลส่วนตัว', 'ขั้นตอนที่ 2: ข้อมูลการซื้อ', 'ขั้นตอนที่ 3: ข้อมูลรถ'],
+      stepDescs: [
+        'กรุณาระบุข้อมูลติดต่อของคุณเพื่อออกใบรับรองการรับประกัน',
+        'กรุณาระบุข้อมูลการสั่งซื้อเพื่อเป็นประโยชน์ในระยะเวลาการรับประกัน',
+        'กรุณาระบุรายละเอียดของรถที่คุณติดตั้งยาง Kinto',
+      ],
+      fullName: 'ชื่อ-นามสกุล', fullNamePh: 'กรอกชื่อ-นามสกุลของคุณ',
+      address: 'ที่อยู่', addressPh: 'บ้านเลขที่, ถนน, ตำบล/แขวง',
+      province: 'จังหวัด', provincePh: 'เลือกจังหวัด',
+      postalCode: 'รหัสไปรษณีย์', postalCodePh: 'กรอกรหัสไปรษณีย์',
+      email: 'อีเมล',
+      phone: 'เบอร์โทรศัพท์',
+      dealerName: 'ชื่อตัวแทนจำหน่าย / ร้านค้าที่สั่งซื้อ', dealerNamePh: 'โปรดระบุชื่อ',
+      purchaseDate: 'วันที่ซื้อ', purchaseDatePh: 'เลือกวันที่ซื้อ',
+      tireModel: 'รุ่น/ขนาดของยาง', tireModelPh: 'เช่น K-Sport 225/45R18',
+      invoiceNumber: 'เลขที่ใบเสร็จ',
+      uploadReceipt: 'อัพโหลดใบเสร็จ',
+      uploadClick: 'คลิกเพื่ออัพโหลด หรือลากไฟล์มาวาง',
+      uploadChange: 'คลิกเพื่อเปลี่ยนรูป',
+      uploadDocDone: 'อัพโหลดเอกสารเรียบร้อยแล้ว',
+      uploadHint: 'PNG, JPG หรือ PDF (สูงสุด 10MB)',
+      vehicleBrand: 'ยี่ห้อ / รุ่นรถ', vehicleBrandPh: 'โปรดระบุชื่อ',
+      licensePlate: 'เลขทะเบียนรถ', licensePlatePh: 'เช่น กข 1234',
+      regProvince: 'จังหวัด', regProvincePh: 'เลือกจังหวัดจดทะเบียน',
+      termsCheck: 'ข้าพเจ้าได้อ่านและยอมรับใน เงื่อนไขการรับประกัน และนโยบายความเป็นส่วนตัว บริษัท คินโตะ ไทร์ (ประเทศไทย) จำกัด',
+      noticePrefix: 'โปรดตรวจสอบข้อมูลให้ถูกต้องเพื่อสิทธิประโยชน์ของตัวท่านเอง ระบบจะส่งข้อมูลยืนยันการลงทะเบียนไปยังหมายเลขเบอร์โทรศัพท์',
+      btnNext: 'ต่อไป', btnSave: 'บันทึกและไปต่อ', btnSubmit: 'ส่งข้อมูลลงทะเบียน', btnBack: 'ย้อนกลับ',
+      doneTitle: 'ลงทะเบียนเสร็จสมบูรณ์',
+      doneThank: 'ขอบคุณที่เลือก Kinto ค่ะ',
+      doneDesc1: 'การลงทะเบียนรับประกันของคุณเสร็จสมบูรณ์แล้ว',
+      doneDesc2: 'คุณจะได้รับข้อความยืนยันในเร็วๆ นี้',
+      btnHome: 'กลับสู่หน้าหลัก', termsLink: 'เงื่อนไขการรับประกัน',
+    },
+    terms: {
+      title: 'เงื่อนไขการรับประกัน',
+      subtitle: 'ตัวอย่างเนื้อหาเบื้องต้นสำหรับหน้าเงื่อนไขการรับประกันยางรถยนต์ Kinto',
+      s1Title: '1. ขอบเขตการรับประกัน',
+      s1Body: 'การรับประกันนี้ครอบคลุมยางรถยนต์ Kinto ที่ซื้อจากตัวแทนจำหน่ายที่ได้รับอนุญาต และลงทะเบียนรับประกันผ่านเว็บไซต์ภายในระยะเวลาที่บริษัทกำหนดหลังวันซื้อสินค้า',
+      s2Title: '2. เอกสารที่ใช้ประกอบการพิจารณา',
+      s2Items: ['ใบเสร็จรับเงินหรือหลักฐานการซื้อสินค้า', 'ข้อมูลรถที่ติดตั้งยางและข้อมูลเจ้าของที่ลงทะเบียน'],
+      s3Title: '3. กรณีที่อยู่ในเงื่อนไขรับประกัน',
+      s3Body: 'บริษัทจะพิจารณาความบกพร่องที่เกิดจากกระบวนการผลิต วัสดุ หรือความผิดปกติของโครงสร้างยาง ภายใต้การใช้งานตามปกติและเป็นไปตามข้อกำหนดของผู้ผลิต',
+      s4Title: '4. กรณีที่ไม่อยู่ในเงื่อนไขรับประกัน',
+      s4Items: ['ความเสียหายจากอุบัติเหตุ การกระแทก การบาดตำ หรือของมีคม', 'การใช้งานผิดประเภท การบรรทุกเกินกำหนด หรือแรงดันลมไม่เหมาะสม', 'การสึกหรอจากการใช้งานตามปกติ หรือการติดตั้ง/ถอดยางที่ไม่ถูกวิธี'],
+      s5Title: '5. ขั้นตอนการเคลมเบื้องต้น',
+      s5Body: 'เมื่อลูกค้าพบปัญหา สามารถติดต่อ Call Center หรือผู้แทนจำหน่าย พร้อมนำส่งหลักฐานการซื้อ รูปถ่ายสินค้า และรายละเอียดการใช้งาน เพื่อให้บริษัทตรวจสอบและแจ้งผลการพิจารณาตามลำดับ',
+      s6Title: '6. หมายเหตุเพิ่มเติม',
+      s6Body: 'บริษัทขอสงวนสิทธิ์ในการเปลี่ยนแปลงเงื่อนไขการรับประกันโดยไม่ต้องแจ้งให้ทราบล่วงหน้า ทั้งนี้การพิจารณาของบริษัทถือเป็นที่สิ้นสุดภายใต้ข้อกำหนดที่ประกาศใช้อยู่ ณ เวลานั้น',
+    },
+    footer: {
+      location: 'สถานที่ตั้ง',
+      privacy: 'นโยบายคุ้มครองข้อมูลส่วนบุคคล',
+      companyName: 'บริษัท คินโตะ ไทร์ (ประเทศไทย) จำกัด',
+      address1: '399/41-42 หมู่ที่ 13 ซอยกิ่งแก้ว 25/1 ถนนกิ่งแก้ว ตำบลราชาเทวะ อำเภอบางพลี',
+      address2: 'จังหวัดสมุทรปราการ 10540',
+    },
+    modal: { title: 'กรอกข้อมูลไม่ครบถ้วน', ok: 'ตกลง' },
+    validation: {
+      step1: 'กรุณากรอกข้อมูลส่วนตัวให้ครบถ้วนและตรวจสอบรูปแบบอีเมล/ตัวเลขให้ถูกต้อง',
+      step2: 'กรุณากรอกข้อมูลการซื้อให้ครบทุกช่อง เลือกวันที่ซื้อที่ไม่เกินวันปัจจุบัน และอัพโหลดใบเสร็จเพื่อดำเนินการต่อ',
+      step3: 'กรุณากรอกข้อมูลรถให้ครบถ้วน และกดยอมรับเงื่อนไขการรับประกันก่อนส่งข้อมูล',
+      submitFailed: 'ไม่สามารถบันทึกข้อมูลได้ในขณะนี้ กรุณาลองใหม่อีกครั้ง',
+    },
+    dateLocale: 'th',
+    dateFormat: 'th-TH-u-ca-buddhist',
+  },
+  EN: {
+    nav: { home: 'Main Website', registration: 'Warranty Registration', terms: 'Warranty Terms' },
+    steps: ['Personal Info', 'Purchase Info', 'Vehicle Info'],
+    hero: {
+      titleReg: 'Kinto Tyre Warranty Registration',
+      titleTerms: 'Kinto Tyre Warranty Terms & Conditions',
+    },
+    reg: {
+      cardTitle: 'Product Warranty Registration',
+      cardSubtitle: 'Register your new tyre for peace of mind in 3 easy steps',
+      stepTitles: ['Step 1: Personal Information', 'Step 2: Purchase Information', 'Step 3: Vehicle Information'],
+      stepDescs: [
+        'Please provide your contact details to issue a warranty certificate.',
+        'Please provide your purchase information for warranty purposes.',
+        'Please provide the vehicle details where your Kinto tyres are installed.',
+      ],
+      fullName: 'Full Name', fullNamePh: 'Enter your full name',
+      address: 'Address', addressPh: 'House number, street, sub-district',
+      province: 'Province', provincePh: 'Select Province',
+      postalCode: 'Postal Code', postalCodePh: 'Enter postal code',
+      email: 'E-Mail',
+      phone: 'Mobile Phone',
+      dealerName: 'Dealer / Shop Name', dealerNamePh: 'Please specify',
+      purchaseDate: 'Date of Purchase', purchaseDatePh: 'Select purchase date',
+      tireModel: 'Tyre Pattern / Size', tireModelPh: 'e.g. K-Sport 225/45R18',
+      invoiceNumber: 'Receipt Number',
+      uploadReceipt: 'Attach Receipt',
+      uploadClick: 'Click to upload or drag and drop',
+      uploadChange: 'Click to change image',
+      uploadDocDone: 'Document uploaded successfully',
+      uploadHint: 'PNG, JPG or PDF (max 10MB)',
+      vehicleBrand: 'Vehicle Brand / Model', vehicleBrandPh: 'Please specify',
+      licensePlate: 'License Plate', licensePlatePh: 'e.g. AB 1234',
+      regProvince: 'Province', regProvincePh: 'Select registration province',
+      termsCheck: 'I have read and accepted the Warranty Terms and Privacy Policy of Kinto Tyre (Thailand) Co., Ltd.',
+      noticePrefix: 'Please verify your information for your own benefit. A registration confirmation will be sent to phone number',
+      btnNext: 'Next', btnSave: 'Save & Continue', btnSubmit: 'Submit Registration', btnBack: 'Back',
+      doneTitle: 'Registration Complete',
+      doneThank: 'Thank you for choosing Kinto',
+      doneDesc1: 'Your warranty registration is complete.',
+      doneDesc2: 'You will receive a confirmation message shortly.',
+      btnHome: 'Return to Home', termsLink: 'Warranty Terms',
+    },
+    terms: {
+      title: 'Warranty Terms & Conditions',
+      subtitle: 'Draft content for Kinto Tyre warranty terms and conditions',
+      s1Title: '1. Warranty Coverage',
+      s1Body: 'This warranty covers Kinto brand tyres purchased from an authorised dealer and registered on the website within the period specified by the company after the date of purchase.',
+      s2Title: '2. Supporting Documents',
+      s2Items: ['Receipt or proof of purchase', 'Vehicle details where tyres are installed and registered owner information'],
+      s3Title: '3. Conditions Covered by Warranty',
+      s3Body: 'The company will consider defects arising from the manufacturing process, materials, or structural abnormalities of the tyre under normal use and in accordance with manufacturer specifications.',
+      s4Title: '4. Conditions Not Covered by Warranty',
+      s4Items: ['Damage from accidents, impacts, cuts, or sharp objects', 'Misuse, overloading, or incorrect tyre pressure', 'Normal wear and tear, or improper tyre installation/removal'],
+      s5Title: '5. Basic Claim Procedure',
+      s5Body: 'When a customer encounters an issue, they may contact the Call Center or dealer, providing proof of purchase, product photos, and usage details so the company can investigate and communicate the outcome accordingly.',
+      s6Title: '6. Additional Notes',
+      s6Body: 'The company reserves the right to amend warranty terms without prior notice. The company\'s decision shall be final under the terms in effect at the time of the claim.',
+    },
+    footer: {
+      location: 'Location',
+      privacy: 'Personal Data Protection Policy',
+      companyName: 'Kinto Tyre (Thailand) Co., Ltd.',
+      address1: '399/41-42 Moo 13, Soi King Kaew 25/1, King Kaew Road, Rachathewa, Bang Phli',
+      address2: 'Samut Prakan 10540',
+    },
+    modal: { title: 'Incomplete Information', ok: 'OK' },
+    validation: {
+      step1: 'Please fill in all personal information and verify the email/number format.',
+      step2: 'Please complete all purchase fields, select a valid purchase date, and upload your receipt.',
+      step3: 'Please complete all vehicle fields and accept the warranty terms before submitting.',
+      submitFailed: 'Unable to save data at this time. Please try again.',
+    },
+    dateLocale: 'en',
+    dateFormat: 'en-GB',
+  },
+} as const
 
 const thailandProvinces = [
   'กรุงเทพมหานคร',
@@ -108,13 +254,21 @@ const thailandProvinces = [
   'อุบลราชธานี',
 ] as const
 
-const stepItems: StepItem[] = [
-  { number: 1, label: 'ข้อมูลส่วนตัว' },
-  { number: 2, label: 'ข้อมูลการซื้อ' },
-  { number: 3, label: 'ข้อมูลรถ' },
-]
-
 const selectedLanguage = ref<LanguageOption>(languages[0])
+
+const t = computed(() => translations[selectedLanguage.value.code])
+
+const navItems = computed<NavItem[]>(() => [
+  { key: 'home', label: t.value.nav.home },
+  { key: 'registration', label: t.value.nav.registration },
+  { key: 'terms', label: t.value.nav.terms },
+])
+
+const stepItems = computed<StepItem[]>(() => [
+  { number: 1, label: t.value.steps[0] },
+  { number: 2, label: t.value.steps[1] },
+  { number: 3, label: t.value.steps[2] },
+])
 const currentPage = ref<'registration' | 'terms'>('registration')
 const currentStep = ref<1 | 2 | 3 | 4>(1)
 const isSubmitting = ref(false)
@@ -142,7 +296,6 @@ const formData = reactive({
   purchaseDate: '',
   tireModel: '',
   invoiceNumber: '',
-  dotNumber: '',
   receiptFileName: '',
   vehicleBrandModel: '',
   licensePlate: '',
@@ -164,7 +317,6 @@ const stepTwoErrors = reactive({
   purchaseDate: false,
   tireModel: false,
   invoiceNumber: false,
-  dotNumber: false,
   receiptFileName: false,
 })
 
@@ -175,19 +327,8 @@ const stepThreeErrors = reactive({
   acceptedTerms: false,
 })
 
-const currentStepTitle = computed(() => {
-  if (currentStep.value === 1) return 'ขั้นตอนที่ 1: ข้อมูลส่วนตัว'
-  if (currentStep.value === 2) return 'ขั้นตอนที่ 2: ข้อมูลการซื้อ'
-  if (currentStep.value === 3) return 'ขั้นตอนที่ 3: ข้อมูลรถ'
-  return ''
-})
-
-const currentStepDescription = computed(() => {
-  if (currentStep.value === 1) return 'กรุณาระบุข้อมูลติดต่อของคุณเพื่อออกใบรับรองการรับประกัน'
-  if (currentStep.value === 2) return 'กรุณาระบุข้อมูลการสั่งซื้อเพื่อเป็นประโยชน์ในระยะเวลาการรับประกัน'
-  if (currentStep.value === 3) return 'กรุณาระบุรายละเอียดของรถที่คุณติดตั้งยาง Kinto'
-  return ''
-})
+const currentStepTitle = computed(() => t.value.reg.stepTitles[currentStep.value - 1] ?? '')
+const currentStepDescription = computed(() => t.value.reg.stepDescs[currentStep.value - 1] ?? '')
 
 const maskedPhone = computed(() => {
   const digits = formData.phone.trim()
@@ -201,7 +342,7 @@ const formattedPurchaseDate = computed(() => {
   if (!formData.purchaseDate) return ''
   const date = new Date(formData.purchaseDate)
   if (Number.isNaN(date.getTime())) return formData.purchaseDate
-  return new Intl.DateTimeFormat('th-TH-u-ca-buddhist', {
+  return new Intl.DateTimeFormat(t.value.dateFormat, {
     day: '2-digit',
     month: 'long',
     year: 'numeric',
@@ -260,6 +401,24 @@ function goToPreviousStep() {
 }
 
 function goHome() {
+  Object.assign(formData, {
+    fullName: '',
+    address: '',
+    province: '',
+    postalCode: '',
+    email: '',
+    phone: '',
+    dealerName: '',
+    purchaseDate: '',
+    tireModel: '',
+    invoiceNumber: '',
+    receiptFileName: '',
+    vehicleBrandModel: '',
+    licensePlate: '',
+    registrationProvince: '',
+    acceptedTerms: false,
+  })
+  receiptFile.value = null
   currentPage.value = 'registration'
   currentStep.value = 1
 }
@@ -359,7 +518,7 @@ function validateStepOne() {
   const hasError = Object.values(stepOneErrors).some(Boolean)
 
   if (hasError) {
-    validationMessage.value = 'กรุณากรอกข้อมูลส่วนตัวให้ครบถ้วนและตรวจสอบรูปแบบอีเมล/ตัวเลขให้ถูกต้อง'
+    validationMessage.value = t.value.validation.step1
     validationDialog.value = true
     return false
   }
@@ -372,7 +531,6 @@ function validateStepTwo() {
   const purchaseDate = normalizePurchaseDate(formData.purchaseDate)
   const tireModel = formData.tireModel.trim()
   const invoiceNumber = formData.invoiceNumber.trim()
-  const dotNumber = formData.dotNumber.trim()
   const receiptFileName = formData.receiptFileName.trim()
 
   formData.purchaseDate = purchaseDate
@@ -381,13 +539,12 @@ function validateStepTwo() {
   stepTwoErrors.purchaseDate = purchaseDate === '' || isFuturePurchaseDate(purchaseDate)
   stepTwoErrors.tireModel = tireModel === ''
   stepTwoErrors.invoiceNumber = invoiceNumber === ''
-  stepTwoErrors.dotNumber = dotNumber === ''
   stepTwoErrors.receiptFileName = receiptFileName === ''
 
   const hasError = Object.values(stepTwoErrors).some(Boolean)
 
   if (hasError) {
-    validationMessage.value = 'กรุณากรอกข้อมูลการซื้อให้ครบทุกช่อง เลือกวันที่ซื้อที่ไม่เกินวันปัจจุบัน และอัพโหลดใบเสร็จเพื่อดำเนินการต่อ'
+    validationMessage.value = t.value.validation.step2
     validationDialog.value = true
     return false
   }
@@ -408,7 +565,7 @@ function validateStepThree() {
   const hasError = Object.values(stepThreeErrors).some(Boolean)
 
   if (hasError) {
-    validationMessage.value = 'กรุณากรอกข้อมูลรถให้ครบถ้วน และกดยอมรับเงื่อนไขการรับประกันก่อนส่งข้อมูล'
+    validationMessage.value = t.value.validation.step3
     validationDialog.value = true
     return false
   }
@@ -431,7 +588,6 @@ async function submitRegistration() {
     payload.append('purchaseDate', formData.purchaseDate)
     payload.append('tireModel', formData.tireModel)
     payload.append('invoiceNumber', formData.invoiceNumber)
-    payload.append('dotNumber', formData.dotNumber)
     payload.append('receiptFileName', receiptFile.value?.name ?? formData.receiptFileName)
     payload.append('vehicleBrandModel', formData.vehicleBrandModel)
     payload.append('licensePlate', formData.licensePlate)
@@ -453,7 +609,7 @@ async function submitRegistration() {
 
     currentStep.value = 4
   } catch {
-    validationMessage.value = 'ไม่สามารถบันทึกข้อมูลได้ในขณะนี้ กรุณาลองใหม่อีกครั้ง'
+    validationMessage.value = t.value.validation.submitFailed
     validationDialog.value = true
   } finally {
     isSubmitting.value = false
@@ -528,7 +684,7 @@ async function submitRegistration() {
 
       <section class="hero">
         <div class="hero__overlay">
-          <h1>{{ currentPage === 'terms' ? 'เงื่อนไขการรับประกันยางคินโตะ ไทร์' : 'ลงทะเบียนรับประกันยางคินโตะ ไทร์' }}</h1>
+          <h1>{{ currentPage === 'terms' ? t.hero.titleTerms : t.hero.titleReg }}</h1>
           <p>{{ currentPage === 'terms' ? 'WARRANTY TERMS & CONDITIONS' : 'WARRANTY REGISTRATION' }}</p>
         </div>
       </section>
@@ -536,47 +692,43 @@ async function submitRegistration() {
       <main class="main-content">
         <section v-if="currentPage === 'terms'" class="terms-card">
           <div class="terms-card__header">
-            <h2>เงื่อนไขการรับประกัน</h2>
-            <p>ตัวอย่างเนื้อหาเบื้องต้นสำหรับหน้าเงื่อนไขการรับประกันยางรถยนต์ Kinto</p>
+            <h2>{{ t.terms.title }}</h2>
+            <p>{{ t.terms.subtitle }}</p>
           </div>
 
           <div class="terms-card__body">
             <section class="terms-section">
-              <h3>1. ขอบเขตการรับประกัน</h3>
-              <p>การรับประกันนี้ครอบคลุมยางรถยนต์ Kinto ที่ซื้อจากตัวแทนจำหน่ายที่ได้รับอนุญาต และลงทะเบียนรับประกันผ่านเว็บไซต์ภายในระยะเวลาที่บริษัทกำหนดหลังวันซื้อสินค้า</p>
+              <h3>{{ t.terms.s1Title }}</h3>
+              <p>{{ t.terms.s1Body }}</p>
             </section>
 
             <section class="terms-section">
-              <h3>2. เอกสารที่ใช้ประกอบการพิจารณา</h3>
+              <h3>{{ t.terms.s2Title }}</h3>
               <ul class="terms-list">
-                <li>ใบเสร็จรับเงินหรือหลักฐานการซื้อสินค้า</li>
-                <li>หมายเลขยาง DOT และข้อมูลรุ่น/ขนาดยางที่ชัดเจน</li>
-                <li>ข้อมูลรถที่ติดตั้งยางและข้อมูลเจ้าของที่ลงทะเบียน</li>
+                <li v-for="item in t.terms.s2Items" :key="item">{{ item }}</li>
               </ul>
             </section>
 
             <section class="terms-section">
-              <h3>3. กรณีที่อยู่ในเงื่อนไขรับประกัน</h3>
-              <p>บริษัทจะพิจารณาความบกพร่องที่เกิดจากกระบวนการผลิต วัสดุ หรือความผิดปกติของโครงสร้างยาง ภายใต้การใช้งานตามปกติและเป็นไปตามข้อกำหนดของผู้ผลิต</p>
+              <h3>{{ t.terms.s3Title }}</h3>
+              <p>{{ t.terms.s3Body }}</p>
             </section>
 
             <section class="terms-section">
-              <h3>4. กรณีที่ไม่อยู่ในเงื่อนไขรับประกัน</h3>
+              <h3>{{ t.terms.s4Title }}</h3>
               <ul class="terms-list">
-                <li>ความเสียหายจากอุบัติเหตุ การกระแทก การบาดตำ หรือของมีคม</li>
-                <li>การใช้งานผิดประเภท การบรรทุกเกินกำหนด หรือแรงดันลมไม่เหมาะสม</li>
-                <li>การสึกหรอจากการใช้งานตามปกติ หรือการติดตั้ง/ถอดยางที่ไม่ถูกวิธี</li>
+                <li v-for="item in t.terms.s4Items" :key="item">{{ item }}</li>
               </ul>
             </section>
 
             <section class="terms-section">
-              <h3>5. ขั้นตอนการเคลมเบื้องต้น</h3>
-              <p>เมื่อลูกค้าพบปัญหา สามารถติดต่อ Call Center หรือผู้แทนจำหน่าย พร้อมนำส่งหลักฐานการซื้อ รูปถ่ายสินค้า และรายละเอียดการใช้งาน เพื่อให้บริษัทตรวจสอบและแจ้งผลการพิจารณาตามลำดับ</p>
+              <h3>{{ t.terms.s5Title }}</h3>
+              <p>{{ t.terms.s5Body }}</p>
             </section>
 
             <section class="terms-section">
-              <h3>6. หมายเหตุเพิ่มเติม</h3>
-              <p>บริษัทขอสงวนสิทธิ์ในการเปลี่ยนแปลงเงื่อนไขการรับประกันโดยไม่ต้องแจ้งให้ทราบล่วงหน้า ทั้งนี้การพิจารณาของบริษัทถือเป็นที่สิ้นสุดภายใต้ข้อกำหนดที่ประกาศใช้อยู่ ณ เวลานั้น</p>
+              <h3>{{ t.terms.s6Title }}</h3>
+              <p>{{ t.terms.s6Body }}</p>
             </section>
           </div>
         </section>
@@ -586,8 +738,8 @@ async function submitRegistration() {
           <template v-if="currentStep !== 4">
             <div class="registration-card__header">
               <div>
-                <h2>ลงทะเบียนรับประกันสินค้า</h2>
-                <p>ลงทะเบียนยางใหม่ของคุณเพื่อความอุ่นใจ ง่ายๆ เพียง 3 ขั้นตอน</p>
+                <h2>{{ t.reg.cardTitle }}</h2>
+                <p>{{ t.reg.cardSubtitle }}</p>
               </div>
 
               <div class="stepper" aria-label="Registration steps">
@@ -617,24 +769,24 @@ async function submitRegistration() {
 
               <v-form v-if="currentStep === 1" class="form-grid">
                 <div class="form-row form-row--full">
-                  <label>ชื่อ-นามสกุล</label>
+                  <label>{{ t.reg.fullName }}</label>
                   <div class="field-shell" :class="{ 'field-shell--active': stepOneErrors.fullName }">
-                    <input v-model="formData.fullName" type="text" placeholder="กรอกชื่อ-นามสกุลของคุณ" />
+                    <input v-model="formData.fullName" type="text" :placeholder="t.reg.fullNamePh" />
                   </div>
                 </div>
 
                 <div class="form-row form-row--full">
-                  <label>ที่อยู่</label>
+                  <label>{{ t.reg.address }}</label>
                   <div class="field-shell field-shell--textarea" :class="{ 'field-shell--active': stepOneErrors.address }">
-                    <textarea v-model="formData.address" placeholder="บ้านเลขที่, ถนน, ตำบล/แขวง"></textarea>
+                    <textarea v-model="formData.address" :placeholder="t.reg.addressPh"></textarea>
                   </div>
                 </div>
 
                 <div class="form-row">
-                  <label>จังหวัด</label>
+                  <label>{{ t.reg.province }}</label>
                 <div class="field-shell" :class="{ 'field-shell--active': stepOneErrors.province }">
                   <select v-model="formData.province" class="field-shell__select">
-                    <option value="" disabled>เลือกจังหวัด</option>
+                    <option value="" disabled>{{ t.reg.provincePh }}</option>
                     <option v-for="province in thailandProvinces" :key="province" :value="province">{{ province }}</option>
                   </select>
                   <v-icon icon="mdi-chevron-down" size="18" />
@@ -642,13 +794,13 @@ async function submitRegistration() {
               </div>
 
                 <div class="form-row">
-                  <label>รหัสไปรษณีย์</label>
+                  <label>{{ t.reg.postalCode }}</label>
                   <div class="field-shell" :class="{ 'field-shell--active': stepOneErrors.postalCode }">
                     <input
                       :value="formData.postalCode"
                       type="text"
                       inputmode="numeric"
-                      placeholder="กรอกรหัสไปรษณีย์"
+                      :placeholder="t.reg.postalCodePh"
                       @keydown="allowDigitsOnly"
                       @input="keepOnlyDigits('postalCode', $event)"
                       @paste="pasteDigitsOnly('postalCode', $event)"
@@ -657,14 +809,14 @@ async function submitRegistration() {
                 </div>
 
                 <div class="form-row">
-                  <label>อีเมล</label>
+                  <label>{{ t.reg.email }}</label>
                   <div class="field-shell" :class="{ 'field-shell--active': stepOneErrors.email }">
                     <input v-model="formData.email" type="email" placeholder="example@email.com" />
                   </div>
                 </div>
 
                 <div class="form-row">
-                  <label>เบอร์โทรศัพท์</label>
+                  <label>{{ t.reg.phone }}</label>
                   <div class="field-shell" :class="{ 'field-shell--active': stepOneErrors.phone }">
                     <input
                       :value="formData.phone"
@@ -681,14 +833,14 @@ async function submitRegistration() {
 
               <v-form v-else-if="currentStep === 2" class="form-grid form-grid--step-two">
                 <div class="form-row">
-                  <label>ชื่อตัวแทนจำหน่าย / ร้านค้าที่สั่งซื้อ</label>
+                  <label>{{ t.reg.dealerName }}</label>
                   <div class="field-shell" :class="{ 'field-shell--active': stepTwoErrors.dealerName }">
-                    <input v-model="formData.dealerName" type="text" placeholder="โปรดระบุชื่อ" />
+                    <input v-model="formData.dealerName" type="text" :placeholder="t.reg.dealerNamePh" />
                   </div>
                 </div>
 
                 <div class="form-row">
-                  <label>วันที่ซื้อ</label>
+                  <label>{{ t.reg.purchaseDate }}</label>
                   <v-menu
                     v-model="purchaseDateMenu"
                     :close-on-content-click="false"
@@ -703,7 +855,7 @@ async function submitRegistration() {
                         v-bind="props"
                       >
                         <span :class="['field-shell__value', { 'is-placeholder': !formData.purchaseDate }]">
-                          {{ formattedPurchaseDate || 'เลือกวันที่ซื้อ' }}
+                          {{ formattedPurchaseDate || t.reg.purchaseDatePh }}
                         </span>
                         <v-icon icon="mdi-calendar-month-outline" size="18" />
                       </button>
@@ -712,7 +864,7 @@ async function submitRegistration() {
                     <div class="datepicker-shell">
                       <v-date-picker
                         :model-value="formData.purchaseDate"
-                        locale="th"
+                        :locale="t.dateLocale"
                         :max="todayBangkokIso"
                         show-adjacent-months
                         hide-header
@@ -724,28 +876,21 @@ async function submitRegistration() {
                 </div>
 
                 <div class="form-row">
-                  <label>รุ่น/ขนาดของยาง</label>
+                  <label>{{ t.reg.tireModel }}</label>
                   <div class="field-shell" :class="{ 'field-shell--active': stepTwoErrors.tireModel }">
-                    <input v-model="formData.tireModel" type="text" placeholder="เช่น K-Sport 225/45R18" />
+                    <input v-model="formData.tireModel" type="text" :placeholder="t.reg.tireModelPh" />
                   </div>
                 </div>
 
                 <div class="form-row">
-                  <label>เลขที่ใบเสร็จ</label>
+                  <label>{{ t.reg.invoiceNumber }}</label>
                   <div class="field-shell" :class="{ 'field-shell--active': stepTwoErrors.invoiceNumber }">
                     <input v-model="formData.invoiceNumber" type="text" placeholder="INV-20231015-001" />
                   </div>
                 </div>
 
-                <div class="form-row">
-                  <label>หมายเลขยาง (DOT Number)</label>
-                  <div class="field-shell" :class="{ 'field-shell--active': stepTwoErrors.dotNumber }">
-                    <input v-model="formData.dotNumber" type="text" placeholder="15848565" />
-                  </div>
-                </div>
-
                 <div class="form-row form-row--full">
-                  <label>อัพโหลดใบเสร็จ</label>
+                  <label>{{ t.reg.uploadReceipt }}</label>
                   <label
                     class="upload-zone"
                     :class="{
@@ -759,7 +904,7 @@ async function submitRegistration() {
                       <img class="upload-zone__preview" :src="receiptPreviewUrl" alt="Receipt preview" />
                       <div class="upload-zone__overlay">
                         <span class="upload-zone__file-name">{{ formData.receiptFileName }}</span>
-                        <span class="upload-zone__hint">คลิกเพื่อเปลี่ยนรูป</span>
+                        <span class="upload-zone__hint">{{ t.reg.uploadChange }}</span>
                       </div>
                     </template>
 
@@ -767,11 +912,11 @@ async function submitRegistration() {
                       <v-icon class="upload-zone__icon" icon="mdi-cloud-upload-outline" size="70" />
                       <p class="upload-zone__text">
                         <template v-if="formData.receiptFileName">{{ formData.receiptFileName }}</template>
-                        <template v-else>คลิกเพื่ออัพโหลด หรือลากไฟล์มาวาง</template>
+                        <template v-else>{{ t.reg.uploadClick }}</template>
                       </p>
                       <span class="upload-zone__hint">
-                        <template v-if="receiptPreviewType === 'document'">อัพโหลดเอกสารเรียบร้อยแล้ว</template>
-                        <template v-else>PNG, JPG หรือ PDF (สูงสุด 10MB)</template>
+                        <template v-if="receiptPreviewType === 'document'">{{ t.reg.uploadDocDone }}</template>
+                        <template v-else>{{ t.reg.uploadHint }}</template>
                       </span>
                     </template>
                   </label>
@@ -780,24 +925,24 @@ async function submitRegistration() {
 
               <v-form v-else class="form-grid form-grid--step-three">
                 <div class="form-row form-row--full">
-                  <label>ยี่ห้อ / รุ่นรถ</label>
+                  <label>{{ t.reg.vehicleBrand }}</label>
                   <div class="field-shell" :class="{ 'field-shell--active': stepThreeErrors.vehicleBrandModel }">
-                    <input v-model="formData.vehicleBrandModel" type="text" placeholder="โปรดระบุชื่อ" />
+                    <input v-model="formData.vehicleBrandModel" type="text" :placeholder="t.reg.vehicleBrandPh" />
                   </div>
                 </div>
 
                 <div class="form-row">
-                  <label>เลขทะเบียนรถ</label>
+                  <label>{{ t.reg.licensePlate }}</label>
                   <div class="field-shell" :class="{ 'field-shell--active': stepThreeErrors.licensePlate }">
-                    <input v-model="formData.licensePlate" type="text" placeholder="เช่น กข 1234" />
+                    <input v-model="formData.licensePlate" type="text" :placeholder="t.reg.licensePlatePh" />
                   </div>
                 </div>
 
                 <div class="form-row">
-                  <label>จังหวัด</label>
+                  <label>{{ t.reg.regProvince }}</label>
                 <div class="field-shell" :class="{ 'field-shell--active': stepThreeErrors.registrationProvince }">
                     <select v-model="formData.registrationProvince" class="field-shell__select">
-                      <option value="" disabled>เลือกจังหวัดจดทะเบียน</option>
+                      <option value="" disabled>{{ t.reg.regProvincePh }}</option>
                       <option v-for="province in thailandProvinces" :key="`vehicle-${province}`" :value="province">{{ province }}</option>
                     </select>
                     <v-icon icon="mdi-chevron-down" size="18" />
@@ -807,19 +952,19 @@ async function submitRegistration() {
                 <label class="terms-check form-row form-row--full" :class="{ 'terms-check--active': stepThreeErrors.acceptedTerms }">
                   <input v-model="formData.acceptedTerms" type="checkbox" />
                   <span class="terms-check__box"></span>
-                  <span class="terms-check__text">ข้าพเจ้าได้อ่านและยอมรับใน เงื่อนไขการรับประกัน และนโยบายความเป็นส่วนตัว บริษัท คินโตะ ไทร์ (ประเทศไทย) จำกัด</span>
+                  <span class="terms-check__text">{{ t.reg.termsCheck }}</span>
                 </label>
 
                 <div class="notice-banner form-row form-row--full">
                   <div class="notice-banner__icon">!</div>
-                  <p>โปรดตรวจสอบข้อมูลให้ถูกต้องเพื่อสิทธิประโยชน์ของตัวท่านเอง ระบบจะส่งข้อมูลยืนยันการลงทะเบียนไปยังหมายเลขเบอร์โทรศัพท์ {{ maskedPhone }}</p>
+                  <p>{{ t.reg.noticePrefix }} {{ maskedPhone }}</p>
                 </div>
               </v-form>
 
               <div class="action-row" :class="{ 'action-row--between': currentStep > 1 }">
-                <button v-if="currentStep > 1" class="secondary-cta" type="button" @click="goToPreviousStep">ย้อนกลับ</button>
+                <button v-if="currentStep > 1" class="secondary-cta" type="button" @click="goToPreviousStep">{{ t.reg.btnBack }}</button>
                 <button class="primary-cta" type="button" :disabled="isSubmitting" @click="goToNextStep">
-                  <span>{{ currentStep === 1 ? 'ต่อไป' : currentStep === 2 ? 'บันทึกและไปต่อ' : 'ส่งข้อมูลลงทะเบียน' }}</span>
+                  <span>{{ currentStep === 1 ? t.reg.btnNext : currentStep === 2 ? t.reg.btnSave : t.reg.btnSubmit }}</span>
                   <v-icon v-if="currentStep === 2" icon="mdi-chevron-right" size="22" />
                 </button>
               </div>
@@ -830,12 +975,12 @@ async function submitRegistration() {
             <div class="registration-complete__icon-wrap">
               <v-icon class="registration-complete__icon" icon="mdi-shield-check-outline" size="144" />
             </div>
-            <h3>ลงทะเบียนเสร็จสมบูรณ์</h3>
-            <p>ขอบคุณที่เลือก Kinto ค่ะ</p>
-            <p>การลงทะเบียนรับประกันของคุณเสร็จสมบูรณ์แล้ว</p>
-            <p>คุณจะได้รับข้อความยืนยันในเร็วๆ นี้</p>
-            <button class="primary-cta registration-complete__cta" type="button" @click="goHome">กลับสู่หน้าหลัก</button>
-            <a class="registration-complete__link" href="#" @click.prevent="goToPage('terms')">เงื่อนไขการรับประกัน</a>
+            <h3>{{ t.reg.doneTitle }}</h3>
+            <p>{{ t.reg.doneThank }}</p>
+            <p>{{ t.reg.doneDesc1 }}</p>
+            <p>{{ t.reg.doneDesc2 }}</p>
+            <button class="primary-cta registration-complete__cta" type="button" @click="goHome">{{ t.reg.btnHome }}</button>
+            <a class="registration-complete__link" href="#" @click.prevent="goToPage('terms')">{{ t.reg.termsLink }}</a>
           </div>
           </template>
         </section>
@@ -867,10 +1012,10 @@ async function submitRegistration() {
             </div>
 
             <div class="footer__address">
-              <h4>สถานที่ตั้ง</h4>
-              <p>บริษัท คินโตะ ไทร์ (ประเทศไทย) จำกัด</p>
-              <p>399/41-42 หมู่ที่ 13 ซอยกิ่งแก้ว 25/1 ถนนกิ่งแก้ว ตำบลราชาเทวะ อำเภอบางพลี</p>
-              <p>จังหวัดสมุทรปราการ 10540</p>
+              <h4>{{ t.footer.location }}</h4>
+              <p>{{ t.footer.companyName }}</p>
+              <p>{{ t.footer.address1 }}</p>
+              <p>{{ t.footer.address2 }}</p>
             </div>
 
             <div class="footer__social">
@@ -886,16 +1031,16 @@ async function submitRegistration() {
         </div>
 
         <div class="footer__bottom">
-          FUJITA GIKEN CO., LTD. ©2026 ALL RIGHTS RESERVED. นโยบายคุ้มครองข้อมูลส่วนบุคคล
+          FUJITA GIKEN CO., LTD. ©2026 ALL RIGHTS RESERVED. {{ t.footer.privacy }}
         </div>
       </footer>
 
       <v-dialog v-model="validationDialog" max-width="460">
         <div class="validation-modal">
           <div class="validation-modal__icon">!</div>
-          <h3>กรอกข้อมูลไม่ครบถ้วน</h3>
+          <h3>{{ t.modal.title }}</h3>
           <p>{{ validationMessage }}</p>
-          <button class="primary-cta validation-modal__button" type="button" @click="validationDialog = false">ตกลง</button>
+          <button class="primary-cta validation-modal__button" type="button" @click="validationDialog = false">{{ t.modal.ok }}</button>
         </div>
       </v-dialog>
     </div>

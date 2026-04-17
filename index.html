@@ -1,4 +1,4 @@
-<!doctype html>
+﻿<!doctype html>
 <html lang="th">
   <head>
     <meta charset="UTF-8" />
@@ -23,7 +23,8 @@
       property="og:description"
       content="ลงทะเบียนรับประกันยางรถยนต์ Kinto Tyres ผ่านระบบออนไลน์ เพื่อบันทึกข้อมูลการซื้อ ข้อมูลรถ และเอกสารประกอบการรับประกันได้อย่างครบถ้วน"
     />
-    <meta property="og:image" content="/OG_img.jpg" />
+    <meta property="og:url" content="%VITE_SITE_URL%" />
+    <meta property="og:image" content="%VITE_SITE_URL%/OG_img.jpg?v=1" />
 
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content="Kinto Tyres | ลงทะเบียนรับประกันยางรถยนต์ออนไลน์" />
@@ -31,12 +32,15 @@
       name="twitter:description"
       content="ระบบลงทะเบียนรับประกันยางรถยนต์ Kinto Tyres ออนไลน์ พร้อมกรอกข้อมูลการซื้อ อัปโหลดใบเสร็จ และยืนยันข้อมูลรถได้ในไม่กี่ขั้นตอน"
     />
-    <meta name="twitter:image" content="/OG_img.jpg" />
+    <meta name="twitter:image" content="%VITE_SITE_URL%/OG_img.jpg?v=1" />
 
-    <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+    <link rel="canonical" href="%VITE_SITE_URL%" />
+    <link rel="icon" type="image/x-icon" href="/favicon.ico?v=1" />
+    <link rel="shortcut icon" href="/favicon.ico?v=1" />
+    <link rel="apple-touch-icon" href="/favicon.ico?v=1" />
   </head>
   <body>
     <div id="app"></div>
     <script type="module" src="/src/main.ts"></script>
   </body>
-  </html>
+</html>

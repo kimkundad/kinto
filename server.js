@@ -136,7 +136,6 @@ app.post('/api/registrations', upload.single('receiptFile'), async (req, res) =>
       formatThaiDate(body.purchaseDate),
       body.tireModel ?? '',
       body.invoiceNumber ?? '',
-      body.dotNumber ?? '',
       receiptUrl || body.receiptFileName || '',
       body.vehicleBrandModel ?? '',
       body.licensePlate ?? '',
@@ -146,7 +145,7 @@ app.post('/api/registrations', upload.single('receiptFile'), async (req, res) =>
 
     await sheets.spreadsheets.values.append({
       spreadsheetId,
-      range: `${firstSheetTitle}!A2:Q`,
+      range: `${firstSheetTitle}!A2:P`,
       valueInputOption: 'USER_ENTERED',
       insertDataOption: 'INSERT_ROWS',
       requestBody: { values },
